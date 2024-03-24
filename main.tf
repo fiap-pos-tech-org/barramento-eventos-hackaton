@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "iam_sqs_send_policy" {
 
 resource "aws_sqs_queue" "registry_queue" {
   name          = var.registry_queue
-  delay_seconds = 60
+  delay_seconds = 0
   policy        = data.aws_iam_policy_document.iam_sqs_send_policy.json
 
   tags = {
@@ -26,7 +26,7 @@ resource "aws_sqs_queue" "registry_queue" {
 
 resource "aws_sqs_queue" "report_queue" {
   name          = var.report_queue
-  delay_seconds = 60
+  delay_seconds = 0
   policy        = data.aws_iam_policy_document.iam_sqs_send_policy.json
 
   tags = {
@@ -55,9 +55,10 @@ resource "aws_sns_topic" "report_notification_topic" {
 
 
 resource "aws_sns_topic_subscription" "registry_topic_report_queue" {
-  topic_arn = aws_sns_topic.registry_topic.arn
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.report_queue.arn
+  topic_arn            = aws_sns_topic.registry_topic.arn
+  protocol             = "sqs"
+  endpoint             = aws_sqs_queue.report_queue.arn
+  raw_message_delivery = true
 
   filter_policy = <<POLICY
   {
@@ -74,9 +75,10 @@ resource "aws_sns_topic_subscription" "registry_topic_report_queue" {
 }
 
 resource "aws_sns_topic_subscription" "registry_topic_registry_queue" {
-  topic_arn = aws_sns_topic.registry_topic.arn
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.registry_queue.arn
+  topic_arn            = aws_sns_topic.registry_topic.arn
+  protocol             = "sqs"
+  endpoint             = aws_sqs_queue.registry_queue.arn
+  raw_message_delivery = true
 
   filter_policy = <<POLICY
   {

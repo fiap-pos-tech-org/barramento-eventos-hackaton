@@ -1,31 +1,20 @@
-# infra-eventos-tech-challenge
+# barramento-eventos
 Event-driven AWS resource terraform files
 
 #### Lista de recursos:
 ##### Filas
-- fila_pagamento_aprovado
-- fila_pagamento_recusado
-- fila_pagamento_cancelado
-- fila_pedido_pronto.fifo
-- fila_producao.fifo
-- fila_pagamento_pendente
+- registry_queue
+- report_queue
 
 
 ##### Tópicos
-- topico_pagamento_retorno
-- topico_pagamento_pendente
-- topico_producao.fifo
+- registry_topic
+- report_notification_topic
 
 
 #### Vínculos:
-> topico_pagamento_pendente -> fila_pagamento_pendente
+> registry_topic -> registry_queue ("timeClockId": [{"exists": true}])
 
-> topico_producao_FIFO -> fila_producao_FIFO (pedido status = "PENDENTE")
+> registry_topic -> report_queue ("yearMonth": [{"exists": true}])
 
-> topico_producao_FIFO -> fila_pedido_pronto_FIFO (pedido status = "PRONTO")
-
-> topico_pagamento_retorno -> fila_pagamento_aprovado (pagamento status = "APROVADO")
-
-> topico_pagamento_retorno -> fila_pagamento_recusado (pagamento status = "RECUSADO")
-
-> topico_pagamento_retorno -> fila_pagamento_cancelado (pagamento status = "CANCELADO")
+> report_notification_topic -> Email
